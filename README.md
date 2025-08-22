@@ -40,6 +40,20 @@ cd setuptools-69.5.1
 
 python3 setup.py install --user
 
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+https://pypi.org/project/certifi/#files
+
+certifi-2024.2.2.tar.gz
+=====================================
+cd ~/Downloads
+tar -xzf certifi-2024.2.2.tar.gz
+cd certifi-2024.2.2
+python3 setup.py install --user
+
+cd ~/requests-2.32.4
+python3 setup.py install --user
+
 
 cd ~/requests-2.32.4
 python3 setup.py install --user
