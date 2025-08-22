@@ -39,3 +39,9 @@ cd setuptools-69.5.1
 
 
 python3 setup.py install --user
+
+
+cd ~/requests-2.32.4
+python3 setup.py install --user
+
+
