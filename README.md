@@ -17,9 +17,11 @@ sudo apt upgrade
 ==================================================
 wget https://fossies.org/linux/www/requests-2.32.4.tar.gz
 
+sudo apt update
+sudo apt install python3-setuptools
 
-tar -xvzf requests-2.32.4.tar.gz
-cd requests-2.32.4
+
+cd ~/requests-2.32.4
 python3 setup.py install --user
 
 
