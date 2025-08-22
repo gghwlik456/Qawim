@@ -37,3 +37,5 @@ wget https://files.pythonhosted.org/packages/source/s/setuptools/setuptools-69.5
 tar -xzf setuptools-69.5.1.tar.gz
 cd setuptools-69.5.1
 
+
+python3 setup.py install --user
