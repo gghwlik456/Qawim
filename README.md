@@ -85,3 +85,18 @@ sudo apt install build-essential
 
 
 python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+sudo apt update
+sudo apt install libssl-dev libffi-dev python3-dev build-essential
+
+sudo apt install --reinstall python3
+
+python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"
+
+
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip setuptools wheel
+
+
+
+
