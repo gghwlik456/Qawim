@@ -58,4 +58,8 @@ python3 setup.py install --user
 cd ~/requests-2.32.4
 python3 setup.py install --user
 
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+https://pypi.org/project/urllib3/#files
 
+urllib3-<version>.tar.gz
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
