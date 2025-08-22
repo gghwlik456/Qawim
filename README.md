@@ -1,3 +1,4 @@
+sudo apt install libssl-dev libffi-dev python3-dev build-essential
 sudo apt update
 sudo apt install python3-pip
 pip3 install requests
