@@ -63,3 +63,9 @@ https://pypi.org/project/urllib3/#files
 
 urllib3-<version>.tar.gz
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+tar -xzf urllib3-2.5.0.tar.gz
+
+cd urllib3-2.5.0
+
+python3 setup.py install --user
+
