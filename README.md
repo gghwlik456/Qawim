@@ -14,3 +14,12 @@ sudo apt install --reinstall python3-apt
 
 sudo apt update
 sudo apt upgrade
+==================================================
+wget https://files.pythonhosted.org/packages/6b/47/8e0dbaafc92f34b34e3c75b6a2a4f5c735f4c5debf28fe2d6c1f25f09b9c/requests-2.31.0.tar.gz
+
+tar -xvzf requests-2.31.0.tar.gz
+cd requests-2.31.0
+
+python3 setup.py install --user
+
+import requests
