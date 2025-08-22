@@ -76,3 +76,12 @@ sudo apt install python3-pip
 
 
 python3 -m pip install .
+
+===========================================================ssl
+sudo apt update
+sudo apt install libssl-dev
+sudo apt install python3-dev
+sudo apt install build-essential
+
+
+python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"
