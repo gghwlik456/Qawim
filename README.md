@@ -31,3 +31,4 @@ python3 -c "import requests; print(requests.__version__)"
 
 python3 ~/Downloads/k7.00.py
 
+wget https://files.pythonhosted.org/packages/source/s/setuptools/setuptools-69.5.1.tar.gz
