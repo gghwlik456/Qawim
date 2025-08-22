@@ -69,3 +69,10 @@ cd urllib3-2.5.0
 
 python3 setup.py install --user
 
+================================================
+
+sudo apt update
+sudo apt install python3-pip
+
+
+python3 -m pip install .
