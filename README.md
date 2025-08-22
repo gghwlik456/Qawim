@@ -47,12 +47,13 @@ https://pypi.org/project/certifi/#files
 certifi-2024.2.2.tar.gz
 =====================================
 cd ~/Downloads
-tar -xzf certifi-2024.2.2.tar.gz
-cd certifi-2024.2.2
+tar -xzf certifi-2025.8.3.tar.gz
+cd certifi-2025.8.3
 python3 setup.py install --user
 
 cd ~/requests-2.32.4
 python3 setup.py install --user
+
 
 
 cd ~/requests-2.32.4
