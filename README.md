@@ -9,3 +9,5 @@ sudo apt update
 sudo apt install build-essential libssl-dev libffi-dev python3-dev
 
 sudo apt --fix-broken install
+
+sudo apt install --reinstall python3-apt
