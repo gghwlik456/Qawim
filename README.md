@@ -7,3 +7,5 @@ python3 k7.00.py
 --------------------------------------------------------------
 sudo apt update
 sudo apt install build-essential libssl-dev libffi-dev python3-dev
+
+sudo apt --fix-broken install
