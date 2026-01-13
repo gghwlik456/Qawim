@@ -1,78 +1,195 @@
-import requests, re, base64, uuid, string, random, time
-from itertools import product
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام قاوم - الإصدار المعتمد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #ffffff; }
+        .hidden { display: none; }
+        @media print {
+            .no-print { display: none !important; }
+            #print-area { display: block !important; width: 72mm; margin: 0; padding: 0; }
+            .label-item { page-break-after: always; text-align: center; padding: 10mm 0; border-bottom: 1px dashed #000; }
+        }
+        #print-area { display: none; }
+    </style>
+</head>
+<body>
 
-# -------- تسجيل الدخول --------
-def login(user, password):
-    rd = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
-    my_uuid = str(uuid.uuid4())
-    modified_uuid = my_uuid[:8] + "should_trigger_override_login_success_action" + my_uuid[8:]
+    <div id="home-page" class="h-screen flex flex-col items-center justify-center space-y-12 no-print">
+        <h1 class="text-3xl font-bold text-gray-800 tracking-tight">نظام إدارة اشتراكات قاوم</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <button onclick="window.showPage('active')" class="group">
+                <div class="w-40 h-40 bg-green-500 rounded-3xl flex items-center justify-center shadow-lg hover:scale-105 transition">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                </div>
+                <p class="mt-4 font-bold text-green-600">التوصيل اليومي</p>
+            </button>
+            <button onclick="window.showPage('paused')" class="group">
+                <div class="w-40 h-40 bg-red-500 rounded-3xl flex items-center justify-center shadow-lg hover:scale-105 transition">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="mt-4 font-bold text-red-600">المتوقفة</p>
+            </button>
+            <button onclick="window.showPage('expired')" class="group">
+                <div class="w-40 h-40 bg-gray-200 rounded-3xl flex items-center justify-center border hover:scale-105 transition">
+                    <span class="text-4xl font-bold text-gray-400">X</span>
+                </div>
+                <p class="mt-4 font-bold text-gray-400">المنتهية</p>
+            </button>
+        </div>
+    </div>
 
-    data = {
-        "params": "{\"client_input_params\":{\"contact_point\":\"" + user + "\",\"password\":\"#PWD_INSTAGRAM:0:0:" + password + "\",\"device_id\":\"android-" + rd + "\",\"event_step\":\"home_page\"},\"server_params\":{\"device_id\":\"android-" + rd + "\",\"waterfall_id\":\"" + modified_uuid + "\"}}"
-    }
-    headers = {
-        "User-Agent": "Instagram 303.0.0.0.59 Android",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "X-Ig-App-Id": "567067343352427"
-    }
+    <div id="list-page" class="hidden p-6 max-w-4xl mx-auto no-print">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex gap-2">
+                <button id="add-btn" onclick="window.openModal()" class="w-12 h-12 bg-green-500 text-white rounded-full shadow-lg text-2xl">+</button>
+                <button id="print-btn" onclick="window.printLabels()" class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">🖨️</button>
+            </div>
+            <h2 id="page-title" class="text-2xl font-bold"></h2>
+            <button onclick="window.goHome()" class="text-blue-500 font-bold">الرئيسية</button>
+        </div>
+        <div class="bg-white border rounded-2xl overflow-hidden shadow-sm">
+            <table class="w-full text-right">
+                <tbody id="data-table" class="divide-y"></tbody>
+            </table>
+        </div>
+    </div>
 
-    r = requests.post("https://i.instagram.com/api/v1/bloks/apps/com.bloks.www.bloks.caa.login.async.send_login_request/", headers=headers, data=data)
-    if "Bearer" in r.text:
-        session = re.search(r'Bearer IGT:2:(.*?),', r.text).group(1).strip()
-        session = session[:-8]
-        decoded = base64.b64decode(session).decode('utf-8')
-        sessionid = re.search(r'"sessionid":"(.*?)"}', decoded).group(1)
-        print(f"[ + ] Logged in as @{user}")
-        return sessionid
-    else:
-        print("[ - ] Failed to login")
-        exit()
+    <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white w-full max-w-md rounded-2xl p-6">
+            <h3 class="text-xl font-bold mb-4">إضافة عميل جديد</h3>
+            <div class="space-y-4">
+                <input type="text" id="cust-name" placeholder="اسم العميل" class="w-full p-3 border rounded-xl outline-none">
+                <input type="tel" id="cust-phone" placeholder="رقم الجوال" class="w-full p-3 border rounded-xl outline-none">
+                <input type="text" id="cust-maps" placeholder="رابط خرائط قوقل" class="w-full p-3 border rounded-xl outline-none">
+                <button onclick="window.saveCustomer()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold">حفظ العميل</button>
+                <button onclick="window.closeModal()" class="w-full text-gray-400">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
-# -------- تغيير الاسم --------
-def change_username(sessionid, new_username):
-    headers = {
-        "User-Agent": "Instagram 303.0.0.0.59 Android",
-        "Cookie": f"sessionid={sessionid}",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-    }
+    <div id="print-area"></div>
 
-    data = {
-        "username": new_username
-    }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    response = requests.post("https://i.instagram.com/api/v1/accounts/set_username/", headers=headers, data=data)
-    if response.status_code == 200 and f'"username":"{new_username}"' in response.text:
-        print(f"[ ✅ ] Username changed successfully to: {new_username}")
-        return True
-    else:
-        if "username isn't available" in response.text:
-            print(f"[ ❌ ] {new_username} is taken.")
-        elif "feedback_required" in response.text:
-            print(f"[ 🚫 ] Rate limited or blocked temporarily. Try again later.")
-            exit()
-        else:
-            print(f"[ ❌ ] Failed to change username to: {new_username}")
-        return False
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxXXn9SCHhhx-Zu729uKtNUtt5QUWC1e4",
+            authDomain: "qawim-41d04.firebaseapp.com",
+            projectId: "qawim-41d04",
+            storageBucket: "qawim-41d04.firebasestorage.app",
+            messagingSenderId: "1015259236420",
+            appId: "1:1015259236420:web:19933e3dd32d34d3741411"
+        };
 
-# -------- توليد الأسماء الثنائية --------
-def generate_usernames():
-    chars = string.ascii_lowercase + string.digits
-    usernames = [''.join(i) for i in product(chars, repeat=2)]
-    random.shuffle(usernames)
-    return usernames
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let unsubscribe = null; 
+        let currentListData = [];
 
-# -------- Main --------
-if __name__ == "__main__":
-    USER = input("[ + ] Username: ")
-    PASS = input("[ + ] Password: ")
+        // دالة التنقل بين الصفحات
+        window.showPage = (status) => {
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('list-page').classList.remove('hidden');
+            
+            const titles = {'active': 'التوصيل اليومي', 'paused': 'الاشتراكات المتوقفة', 'expired': 'الاشتراكات المنتهية'};
+            document.getElementById('page-title').innerText = titles[status];
+            document.getElementById('add-btn').classList.toggle('hidden', status !== 'active');
+            document.getElementById('print-btn').classList.toggle('hidden', status !== 'active');
 
-    sessionid = login(USER, PASS)
-    names = generate_usernames()
+            if (unsubscribe) unsubscribe(); // إيقاف الاستماع للقائمة السابقة فوراً
 
-    print(f"[ * ] Trying {len(names)} usernames...\n")
+            const q = query(collection(db, "customers"), where("status", "==", status));
+            
+            unsubscribe = onSnapshot(q, (snap) => {
+                const table = document.getElementById('data-table');
+                table.innerHTML = '';
+                currentListData = []; // تحديث مصفوفة الطباعة
 
-    for name in names:
-        success = change_username(sessionid, name)
-        if success:
-            break
-        time.sleep(2)  # تأخير 2 ثانية بين كل محاولة
+                snap.forEach(d => {
+                    const c = d.data();
+                    const id = d.id;
+                    currentListData.push({id, ...c});
+
+                    table.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-4 font-bold text-gray-800">
+                                ${c.name} <br>
+                                <small class="text-gray-400 font-normal">${c.phone}</small>
+                            </td>
+                            <td class="p-4 text-left">
+                                <button onclick="window.changeStatus('${id}', '${status === 'active' ? 'paused' : 'active'}')" 
+                                        class="text-xs border border-gray-200 px-3 py-1 rounded-lg">
+                                    ${status === 'active' ? 'إيقاف' : 'تفعيل'}
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            });
+        };
+
+        window.saveCustomer = async () => {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const mapsUrl = document.getElementById('cust-maps').value;
+            if(!name || !phone) return alert("يرجى إدخال الاسم والجوال");
+            
+            await addDoc(collection(db, "customers"), {
+                name, phone, mapsUrl, status: 'active', createdAt: new Date()
+            });
+            window.closeModal();
+            // تفريغ الخانات
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-maps').value = '';
+        };
+
+        window.changeStatus = async (id, newStatus) => {
+            await updateDoc(doc(db, "customers", id), { status: newStatus });
+        };
+
+        window.printLabels = () => {
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = ''; // تنظيف
+
+            if (currentListData.length === 0) return alert("لا يوجد عملاء للطباعة");
+
+            currentListData.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'label-item';
+                item.innerHTML = `
+                    <div style="font-size: 22px; font-weight: bold;">${c.name}</div>
+                    <div style="font-size: 18px; margin: 5px 0;">${c.phone}</div>
+                    <div id="qr-${c.id}" style="display: flex; justify-content: center; margin: 15px 0;"></div>
+                    <div style="font-size: 12px; margin-top: 10px;">* وجبة يومية - قاوم *</div>
+                `;
+                printArea.appendChild(item);
+
+                new QRCode(document.getElementById(`qr-${c.id}`), {
+                    text: c.mapsUrl || "https://maps.google.com",
+                    width: 130,
+                    height: 130
+                });
+            });
+
+            setTimeout(() => { window.print(); }, 1000);
+        };
+
+        window.goHome = () => {
+            if (unsubscribe) unsubscribe();
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('list-page').classList.add('hidden');
+        };
+
+        window.openModal = () => document.getElementById('modal').classList.remove('hidden');
+        window.closeModal = () => document.getElementById('modal').classList.add('hidden');
+    </script>
+</body>
+</html>
